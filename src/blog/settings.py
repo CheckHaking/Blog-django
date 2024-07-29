@@ -141,5 +141,8 @@ AUTHENTICATION_BACKENDS = [
 
     # `allauth` specific authentication methods, such as login by email
     'allauth.account.auth_backends.AuthenticationBackend',
-
 ]
+
+#Cuando usamos nuestro Abstract user y usamos el django-allauth tenemos que especificarle a django donde se encuentra nuestro modelo de auth
+
+AUTH_USER_MODEL = 'posts.User'
