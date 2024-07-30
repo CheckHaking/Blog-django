@@ -22,6 +22,8 @@ class Post(models.Model):
     last_updated = models.DateTimeField(auto_now = True)
     #Creamos una relaciond e foreingkey para para relacionar el modelo dde author con el post
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    #Para usar el slug en url hay que darselo en el modelo
+    slug = models.SlugField()
     
     def __str__(self) -> str:
         return self.title
