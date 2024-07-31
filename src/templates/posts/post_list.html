@@ -1,21 +1,28 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <div class="container">
-
+  <div class="row">
     {%for object in object_list%}
+    <div class="col-3">
+      <a href="{{object.get_absolute_url}}">
+        <div class="card" style="width: 18rem">
+          <img src="{{ object.tumbnail.url }}" class="card-img-top" alt="..." />
+          <div class="card-body">
+            <h5 class="card-title">{{object.title}}</h5>
+            <p class="card-text">{{ object.content|truncatechars:40 }}</p>
+            <hr/>
+            <p>
+                <span>view count</span>
+                <span>like count</span>
+                <span>comment count</span>
 
-        {{object.title}}
-
+            </p>
+          </div>
+        </div>
+      </a>
+    </div>
     {% endfor %}
-
-
+  </div>
 </div>
 
-
 {% endblock content %}
-
-
-
-

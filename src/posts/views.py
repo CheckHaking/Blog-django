@@ -29,7 +29,6 @@ class PostCreateView(CreateView):
         return context
     
     
-    
 class PostUpdateView(UpdateView):
     form_class = PostForm
     model = Post

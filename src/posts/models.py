@@ -3,6 +3,9 @@ from django.db import models
 #Despues de configurar el django-allauth, vamos a crear nuestro modelo de usuario
 from django.contrib.auth.models import AbstractUser
 
+#Para usar reverse
+from django.shortcuts import reverse
+
 
 
 class User(AbstractUser):
@@ -27,6 +30,14 @@ class Post(models.Model):
     
     def __str__(self) -> str:
         return self.title
+    
+        #Para usar los links de cada carta con el post, y que nos lleve a abrir los detalles de cada carta, definimos una funcion que obtenga la url absoluta
+    
+    def get_absolute_url(self):
+        print(f"slug:{self.slug}")
+        return reverse("detail", kwargs={
+            "slug": self.slug
+            })
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -45,6 +56,9 @@ class PostView(models.Model):
     
     def __str__(self):
         return self.user.username
+    
+
+    
     
 class Like(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)

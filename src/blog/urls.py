@@ -8,7 +8,7 @@ from posts.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),
+    path('accounts/', include('allauth.urls')), #Esta linea biene de django allauth
     path('', PostListView.as_view(), name='list'),
     path('create/', PostCreateView.as_view(), name='create'),
     path('<slug>/', PostDetailView.as_view(), name='detail'),
