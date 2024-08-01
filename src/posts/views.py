@@ -1,5 +1,5 @@
 from typing import Any
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 
 #importamos las vistas que django nos da
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -7,6 +7,9 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import *
 #Ahora traeremos los formularios a nuestro archivo de views
 from .forms import PostForm
+
+#parar darle funcionalidad al like de nuestro blog
+
 
 
 class PostListView(ListView):
@@ -50,3 +53,17 @@ class PostUpdateView(UpdateView):
 class PostDeleteView(DeleteView):
     model = Post
     success_url = '/' #Esta linea es para que cuando le demos submit al boton nos redirija a "/"
+
+
+#definimos una funcion para nuestros like 
+#Esta funcion la vamos a usar en nuestras urls.py para pder usarlo
+
+def like(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+    like_qs = Like.objects.filter(user=request.user, post=post)
+    if like_qs.exists():
+        like_qs[0].delete()
+        return redirect('detail', slug=slug)
+    Like.objects.create(user=request.user, post=post)
+    return redirect('detail', slug=slug)
+

@@ -39,6 +39,14 @@ class Post(models.Model):
             "slug": self.slug
             })
         
+        
+    def get_like_url(self):
+        print(f"slug:{self.slug}")
+        return reverse("like", kwargs={
+            "slug": self.slug
+            })
+        
+        
     @property
     def get_comment_cout(self):
         return self.comment_set.all().count()
