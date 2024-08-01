@@ -48,6 +48,10 @@ class Post(models.Model):
         
         
     @property
+    def comment(self):
+        return self.comment_set.all()
+        
+    @property
     def get_comment_cout(self):
         return self.comment_set.all().count()
         

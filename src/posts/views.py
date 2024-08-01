@@ -6,7 +6,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 #importamos los modelos que van a ser usados en las vistas
 from .models import *
 #Ahora traeremos los formularios a nuestro archivo de views
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 
 #parar darle funcionalidad al like de nuestro blog
 
@@ -17,6 +17,35 @@ class PostListView(ListView):
 
 class PostDetailView(DetailView):
     model = Post
+    
+    def post(self, *args, **kwargs):
+        form = CommentForm(self.request.POST)
+        if form.is_valid():
+            post = self.get_object()
+            comment = form.instance
+            comment.user = self.request.user
+            comment.post = post
+            comment.save()
+            return redirect("detail", slug=post.slug)
+        return redirect("detail", slug=self.get_object().slug)
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'form': CommentForm()
+        })
+        return context
+    
+    
+    #logica para que aparezcan las vistads
+    def get_object(self, **kwargs):
+        
+        object = super().get_object(**kwargs) #este objeto esta haciendo referencia a post create view
+        if self.request.user.is_authenticated:
+            #Crearemos un Post
+            PostView.objects.get_or_create(user=self.request.user, post=object)
+        
+        return object
 
 class PostCreateView(CreateView):
     form_class = PostForm #Cuando le pasamos form_class es lo mismo que teener el atributo fields, asi que debemos borrarlo
