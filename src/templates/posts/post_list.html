@@ -1,9 +1,12 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} 
+{% load static %}
+{% block content %}
 
 <div class="container">
+  {% if object_list %}
   <div class="row">
     {%for object in object_list%}
-    <div class="col-3">
+    <div class="col-3 mb-4 d-flex align-items-stretch">
       <a href="{{object.get_absolute_url}}">
         <div class="card" style="width: 18rem">
           <img src="{{ object.tumbnail.url }}" class="card-img-top" alt="..." />
@@ -30,6 +33,15 @@
     </div>
     {% endfor %}
   </div>
+  {% else %}
+  <div class="text-center mt-5">
+    <img src="{% static 'images/dia-mundial-mono.jpg' %}" alt="No posts"   style="width: 50%; max-width: 500px;" class="mb-3">
+    <h2>No post available </h2>
+    <p>It looks like there are no posts yet. <a href="{% url 'create' %}" class="btn btn-primary">Create your first post</a></p>
+
+  </div>
+
+  {% endif %}
 </div>
 
 {% endblock content %}
