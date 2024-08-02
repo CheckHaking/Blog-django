@@ -1,21 +1,24 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "manage.py",
-        "use": "@vercel/python"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/static/(.*)",
-        "dest": "/static/$1"
-      },
-      {
-        "src": "/media/(.*)",
-        "dest": "/media/$1"
-      }
-    ]
-  }
-
-  
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/blog/wsgi.py",
+      "use": "@vercel/python",
+      "config": { "commands": ["python manage.py collectstatic --noinput"] }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/media/(.*)",
+      "dest": "/media/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "src/blog/wsgi.py"
+    }
+  ]
+}

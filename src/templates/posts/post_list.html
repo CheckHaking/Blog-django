@@ -37,7 +37,11 @@
   <div class="text-center mt-5">
     <img src="{% static 'images/dia-mundial-mono.jpg' %}" alt="No posts"   style="width: 50%; max-width: 500px;" class="mb-3">
     <h2>No post available </h2>
+    {% if user.is_authenticated %}
     <p>It looks like there are no posts yet. <a href="{% url 'create' %}" class="btn btn-primary">Create your first post</a></p>
+    {% else %}
+    Please <a href="{% url 'account_signup' %}">sign up</a> or <a href="{% url 'account_login' %}">log in</a> to create a post.
+    {% endif %}
 
   </div>
 

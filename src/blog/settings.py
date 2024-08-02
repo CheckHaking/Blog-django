@@ -2,6 +2,8 @@ from pathlib import Path
 
 #Base de datos supabase 
 from dotenv import load_dotenv
+
+#carga el archivo .env
 load_dotenv()
 
 #Importamos os (operating system), para poder configurar nuestro sistema operativo 
@@ -15,12 +17,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!57m-c7%rxk=#!2ea9%j=+&h&7qyzzm3rgt!s3a$u+9nz4)ji@'
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', 'False')=='True'
 
-ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app', '.now.sh']
+ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
 
 
 
@@ -90,11 +93,11 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get("postgres"),
-        'USER': os.environ.get("postgres.gxisvgkwizladfkqwchp"),
-        'PASSWORD': os.environ.get("blogChak9889!"),
-        'HOST': os.environ.get("aws-0-us-west-1.pooler.supabase.com"),
-        'PORT': os.environ.get("6543"),
+        'NAME': os.environ.get("DB_NAME"),
+        'USER': os.environ.get("DB_USER"),
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
+        'HOST': os.environ.get("DB_HOST"),
+        'PORT': os.environ.get("DB_PORT"),
     }
 }
  
@@ -158,6 +161,12 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by email
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+SITE_ID = 1  # Asegúrate de que esto esté configurado correctamente
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 #Cuando usamos nuestro Abstract user y usamos el django-allauth tenemos que especificarle a django donde se encuentra nuestro modelo de auth
 
