@@ -1,5 +1,9 @@
 from pathlib import Path
 
+#Base de datos supabase 
+from dotenv import load_dotenv
+load_dotenv()
+
 #Importamos os (operating system), para poder configurar nuestro sistema operativo 
 import os
 
@@ -14,9 +18,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-!57m-c7%rxk=#!2ea9%j=+&h&7qyzzm3rgt!s3a$u+9nz4)ji@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app', '.now.sh']
+
 
 
 # Application definition
@@ -84,11 +89,15 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get("postgres"),
+        'USER': os.environ.get("postgres.gxisvgkwizladfkqwchp"),
+        'PASSWORD': os.environ.get("blogChak9889!"),
+        'HOST': os.environ.get("aws-0-us-west-1.pooler.supabase.com"),
+        'PORT': os.environ.get("6543"),
     }
 }
-
+ 
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
