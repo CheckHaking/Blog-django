@@ -3,8 +3,7 @@
   "builds": [
     {
       "src": "src/blog/wsgi.py",
-      "use": "@vercel/python",
-      "config": { "commands": ["python manage.py collectstatic --noinput"] }
+      "use": "@vercel/python"
     }
   ],
   "routes": [
