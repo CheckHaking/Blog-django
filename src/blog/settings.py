@@ -1,5 +1,4 @@
 from pathlib import Path
-
 #Base de datos supabase 
 from dotenv import load_dotenv
 
@@ -8,6 +7,9 @@ load_dotenv()
 
 #Importamos os (operating system), para poder configurar nuestro sistema operativo 
 import os
+
+import logging.config
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,6 +26,52 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = os.environ.get('DEBUG', 'False')=='True'
 
 ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
+
+
+#Configuracion de errores
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'django_errors.log',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'myapp': {  # Puedes elegir cualquier nombre aquí
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
+#Configuaracion del sistema de logging
+logging.config.dictConfig(LOGGING)
 
 
 

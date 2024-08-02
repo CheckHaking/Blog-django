@@ -1,4 +1,5 @@
 from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render, get_object_or_404, redirect
 
 #importamos las vistas que django nos da
@@ -8,12 +9,25 @@ from .models import *
 #Ahora traeremos los formularios a nuestro archivo de views
 from .forms import PostForm, CommentForm
 
-#parar darle funcionalidad al like de nuestro blog
+#para tratar los errores qeu pueda haber
+import logging
+
+logger = logging.getLogger('myapp')
 
 
 
 class PostListView(ListView):
     model = Post
+    
+    def get_queryset(self):
+        try:
+            return super().get_queryset()
+        except Exception as e: 
+            logger.error(f"Error en Post List View {e}")
+
+        
+    
+    
 
 class PostDetailView(DetailView):
     model = Post
