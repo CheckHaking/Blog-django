@@ -1,6 +1,8 @@
 from typing import Any
 from django.db.models.query import QuerySet
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponseServerError
+
 
 #importamos las vistas que django nos da
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -26,40 +28,46 @@ class PostListView(ListView):
             logger.error(f"Error en Post List View {e}")
 
         
-    
-    
-
 class PostDetailView(DetailView):
     model = Post
     
     def post(self, *args, **kwargs):
         form = CommentForm(self.request.POST)
-        if form.is_valid():
-            post = self.get_object()
-            comment = form.instance
-            comment.user = self.request.user
-            comment.post = post
-            comment.save()
-            return redirect("detail", slug=post.slug)
+        try:
+            if form.is_valid():
+                post = self.get_object()
+                comment = form.instance
+                comment.user = self.request.user
+                comment.post = post
+                comment.save()
+                return redirect("detail", slug=post.slug)
+        except Exception as e:
+            logger.error(f"Error al procesar comentario en PostDetailView: {e}")
+            return HttpResponseServerError("Hubo un error a procesar el commentario")
         return redirect("detail", slug=self.get_object().slug)
+
         
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({
-            'form': CommentForm()
-        })
-        return context
-    
+        try:
+            context = super().get_context_data(**kwargs)
+            context.update({
+                'form': CommentForm()
+            })
+            return context
+        except Exception as e:
+            logger.error(f"Error al obtener el contexto en PostDetailView: {e}")
+            return super().get_context_data(**kwargs)
     
     #logica para que aparezcan las vistads
     def get_object(self, **kwargs):
-        
-        object = super().get_object(**kwargs) #este objeto esta haciendo referencia a post create view
-        if self.request.user.is_authenticated:
-            #Crearemos un Post
-            PostView.objects.get_or_create(user=self.request.user, post=object)
-        
-        return object
+        try:
+            object = super().get_object(**kwargs)
+            if self.request.user.is_authenticated:
+                PostView.objects.get_or_create(user=self.request.user, post=object)
+            return object
+        except Exception as e:
+            logger.error(f"Error al obtener el objeto en PostDetailView: {e}")
+            return None
 
 class PostCreateView(CreateView):
     form_class = PostForm #Cuando le pasamos form_class es lo mismo que teener el atributo fields, asi que debemos borrarlo
@@ -68,11 +76,15 @@ class PostCreateView(CreateView):
     #fields = ('title','content','tumbnail','author', 'slug')
     success_url = '/' #Esta linea es para que cuando le demos submit al boton nos redirija a "/"
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({
-            'view_type': 'create'
-        })
-        return context
+        try:
+            context = super().get_context_data(**kwargs)
+            context.update({
+                'view_type': 'create'
+            })
+            return context
+        except Exception as e:
+            logger.error(f"Error al obtener el contexto en PostCreateView: {e}")
+            return super().get_context_data(**kwargs)
     
     
 class PostUpdateView(UpdateView):
@@ -84,11 +96,15 @@ class PostUpdateView(UpdateView):
     
     #Ahora podemos definir datos de contexto 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({
-            'view_type': 'update'
-        })
-        return context
+        try:
+            context = super().get_context_data(**kwargs)
+            context.update({
+                'view_type': 'update'
+            })
+            return context
+        except Exception as e:
+            logger.error(f"Error al obtener el contexto en PostUpdateView: {e}")
+            return super().get_context_data(**kwargs)
     
     
     
@@ -102,11 +118,14 @@ class PostDeleteView(DeleteView):
 #Esta funcion la vamos a usar en nuestras urls.py para pder usarlo
 
 def like(request, slug):
-    post = get_object_or_404(Post, slug=slug)
-    like_qs = Like.objects.filter(user=request.user, post=post)
-    if like_qs.exists():
-        like_qs[0].delete()
+    try:
+        post = get_object_or_404(Post, slug=slug)
+        like_qs = Like.objects.filter(user=request.user, post=post)
+        if like_qs.exists():
+            like_qs[0].delete()
+        else:
+            Like.objects.create(user=request.user, post=post)
         return redirect('detail', slug=slug)
-    Like.objects.create(user=request.user, post=post)
-    return redirect('detail', slug=slug)
-
+    except Exception as e:
+        logger.error(f"Error al procesar like: {e}")
+        return HttpResponseServerError("Hubo un error al procesar el like.")
