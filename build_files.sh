@@ -1,6 +1,6 @@
-# Instala las dependencias
-python -m pip install -r requirements.txt
+# build_files.sh
+pip install -r requirements.txt
 
-# Ejecuta las migraciones y recolecta los archivos estáticos
-python manage.py collectstatic --noinput
-python manage.py migrate
+# make migrations
+python3.12 manage.py migrate 
+python3.12 manage.py collectstatic
