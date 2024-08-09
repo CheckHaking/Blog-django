@@ -11,7 +11,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "src/blog/wsgi.py"
+      "dest": "blog/wsgi.py"
     }
   ]
 }
